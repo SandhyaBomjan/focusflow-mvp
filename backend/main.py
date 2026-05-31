@@ -19,7 +19,7 @@ from database import fetch_all, fetch_one, execute, init_db, close_db
 app = FastAPI(title="FocusFlow Backend")
 
 # CORS: allow React dev server on localhost:3000
-origins = ["http://localhost:3000"]
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
