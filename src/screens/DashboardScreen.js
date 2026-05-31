@@ -10,7 +10,6 @@ function DashboardScreen({
   onCompleteTask,
   onDeleteTask
 }) {
-  console.log(tasks);
 
   return (
     <div className="space-y-6">
