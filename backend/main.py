@@ -57,6 +57,13 @@ async def on_shutdown():
     # Close the database pool on shutdown
     await close_db()
 
+@app.get("/")
+async def root():
+    return {
+        "message": "FocusFlow Backend is running",
+        "docs": "/docs",
+        "health": "/health"
+    }
 
 @app.get("/health")
 async def health() -> dict:
