@@ -19,13 +19,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Internal global pool reference
-_POOL = await asyncpg.create_pool(
-    dsn=database_url,
-    min_size=1,
-    max_size=1
-)
-
-
 async def init_db() -> None:
     """Initialize the asyncpg connection pool using DATABASE_URL."""
     global _POOL
@@ -34,8 +27,11 @@ async def init_db() -> None:
     database_url = os.getenv("DATABASE_URL")
     if not database_url:
         raise RuntimeError("DATABASE_URL is not set in the environment.")
-    _POOL = await asyncpg.create_pool(dsn=database_url)
-
+    _POOL = await asyncpg.create_pool(
+    dsn=database_url,
+    min_size=1,
+    max_size=1
+)
 
 async def close_db() -> None:
     """Close the connection pool if it exists."""
