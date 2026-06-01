@@ -19,6 +19,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Internal global pool reference
+_POOL: Optional[asyncpg.pool.Pool] = None
 async def init_db() -> None:
     """Initialize the asyncpg connection pool using DATABASE_URL."""
     global _POOL
