@@ -14,6 +14,7 @@ import AddTaskScreen from './screens/AddTaskScreen';
 import ConfirmationScreen from './screens/ConfirmationScreen';
 import { TOTAL_STEPS } from './data/screens';
 import { hasValue, isEmailValid, isLoginValid, isRegisterValid, isTaskValid } from './utils/validation';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const initialLoginForm = { email: '', password: '' };
 const initialRegisterForm = { name: '', email: '', password: '' };
@@ -314,15 +315,18 @@ const handleDeleteTask = async (id) => {
   const currentMeta = screenContent[currentStep];
 
   return (
-    <AppShell
-      step={currentStep}
-      totalSteps={TOTAL_STEPS}
-      eyebrow={currentMeta.eyebrow}
-      title={currentMeta.title}
-      description={currentMeta.description}
-    >
-      {renderStep()}
-    </AppShell>
+    <>
+      <AppShell
+        step={currentStep}
+        totalSteps={TOTAL_STEPS}
+        eyebrow={currentMeta.eyebrow}
+        title={currentMeta.title}
+        description={currentMeta.description}
+      >
+        {renderStep()}
+      </AppShell>
+      <SpeedInsights />
+    </>
   );
 }
 
