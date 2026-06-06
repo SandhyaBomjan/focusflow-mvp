@@ -1,4 +1,4 @@
-const API_URL = "https://focusflow-mvp.vercel.app";
+const API_URL = "https://focusflow-cddgm196x-sandhya-bomjan-s-projects.vercel.app";
 
 export const getTasks = async () => {
   const response = await fetch(`${API_URL}/tasks`);
