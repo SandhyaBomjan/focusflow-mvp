@@ -13,7 +13,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from backend.database import fetch_all, fetch_one, execute, init_db, close_db
+from database import fetch_all, fetch_one, execute, init_db, close_db
 
 # Initialize FastAPI app
 app = FastAPI(title="FocusFlow Backend")
