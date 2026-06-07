@@ -102,7 +102,7 @@ async def list_tasks(user_email: str = Query(...)) -> TaskList:
 
 @app.post("/tasks", response_model=TaskResponse)
 async def create_task(payload: TaskCreate) -> TaskResponse:
-    # Insert and return the created row
+    print("EMAIL RECEIVED:", payload.user_email)
     row = await fetch_one(
         "INSERT INTO tasks (title, details, user_email, completed, created_at) VALUES ($1, $2, $3, false, NOW()) RETURNING id, title, details, completed, created_at,user_email",
         payload.title,
