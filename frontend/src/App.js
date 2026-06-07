@@ -173,11 +173,13 @@ const handleDeleteTask = async (id) => {
     }
 
     setUser({ name: registerForm.name, email: registerForm.email });
-    localStorage.setItem("userEmail", registerForm.email);
-    setLoginForm({ email: registerForm.email, password: registerForm.password });
-    setDashboardMessage('Account created locally. Welcome to FocusFlow.');
-    clearMessages();
-    setCurrentStep(3);
+    setLoginForm({
+    email: registerForm.email,
+     password: registerForm.password
+});
+
+setFeedback('Account created successfully. Please log in.');
+setCurrentStep(2);
   };
 
    const handleTaskSubmit = async () => {
