@@ -152,6 +152,7 @@ const handleDeleteTask = async (id) => {
 
     const derivedName = registerForm.name || loginForm.email.split('@')[0] || 'User';
     setUser({ name: derivedName, email: loginForm.email });
+    localStorage.setItem("userEmail", loginForm.email);
     setDashboardMessage('Logged in locally. Your productivity space is ready.');
     clearMessages();
     setCurrentStep(3);
@@ -172,6 +173,7 @@ const handleDeleteTask = async (id) => {
     }
 
     setUser({ name: registerForm.name, email: registerForm.email });
+    localStorage.setItem("userEmail", registerForm.email);
     setLoginForm({ email: registerForm.email, password: registerForm.password });
     setDashboardMessage('Account created locally. Welcome to FocusFlow.');
     clearMessages();
@@ -179,6 +181,8 @@ const handleDeleteTask = async (id) => {
   };
 
    const handleTaskSubmit = async () => {
+    console.log("HANDLE TASK SUBMIT RUNNING");
+    console.log("EMAIL:", localStorage.getItem("userEmail"));
   const nextErrors = {};
 
   if (!hasValue(taskForm.title)) {
@@ -192,9 +196,12 @@ const handleDeleteTask = async (id) => {
   }
 
   try {
+    console.log("Creating task...");
+    console.log(localStorage.getItem("userEmail")); 
     const newTask = await createTask({
       title: taskForm.title,
       details: taskForm.details,
+      user_email: localStorage.getItem("userEmail"),
     });
 
     setTasks((previous) => [

@@ -32,6 +32,7 @@ app.add_middleware(
 class TaskCreate(BaseModel):
     title: str
     details: str
+    user_email: str
 
 
 class TaskResponse(BaseModel):
@@ -70,9 +71,21 @@ async def health() -> dict:
     return {"status": "ok"}
 
 
+
+from fastapi import Query
+
 @app.get("/tasks", response_model=TaskList)
-async def list_tasks() -> TaskList:
-    rows = await fetch_all("SELECT id, title, details, completed, created_at FROM tasks ORDER BY created_at DESC")
+async def list_tasks(user_email: str = Query(...)) -> TaskList:
+    rows = await fetch_all(
+        """
+        SELECT id, title, details, completed, created_at
+        FROM tasks
+        WHERE user_email = $1
+        ORDER BY created_at DESC
+        """,
+        user_email
+    )
+
     tasks = [
         TaskResponse(
             id=row["id"],
@@ -83,6 +96,7 @@ async def list_tasks() -> TaskList:
         )
         for row in rows
     ]
+
     return TaskList(tasks=tasks)
 
 
@@ -90,9 +104,10 @@ async def list_tasks() -> TaskList:
 async def create_task(payload: TaskCreate) -> TaskResponse:
     # Insert and return the created row
     row = await fetch_one(
-        "INSERT INTO tasks (title, details, completed, created_at) VALUES ($1, $2, false, NOW()) RETURNING id, title, details, completed, created_at",
+        "INSERT INTO tasks (title, details, user_email, completed, created_at) VALUES ($1, $2, $3, false, NOW()) RETURNING id, title, details, completed, created_at,user_email",
         payload.title,
         payload.details,
+        payload.user_email,
     )
     if row is None:
         raise HTTPException(status_code=500, detail="Failed to create task")
