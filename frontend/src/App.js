@@ -177,6 +177,7 @@ const handleDeleteTask = async (id) => {
     });
 
     setDashboardMessage('Successfully logged in.');
+    await loadTasks();
 
     clearMessages();
 
@@ -229,7 +230,10 @@ const handleLogout = async () => {
 
   localStorage.removeItem("userEmail");
 
-  setUser(null);
+  setUser({
+  name: 'User',
+  email: '',
+});
   setTasks([]);
   setCurrentStep(2);
 };
