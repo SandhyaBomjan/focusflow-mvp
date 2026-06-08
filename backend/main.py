@@ -112,6 +112,7 @@ async def create_task(payload: TaskCreate) -> TaskResponse:
         payload.details,
         payload.user_email,
     )
+    print("ROW RETURNED:", dict(row) if row else None)
     if row is None:
         raise HTTPException(status_code=500, detail="Failed to create task")
     return TaskResponse(
