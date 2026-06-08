@@ -8,13 +8,26 @@ function DashboardScreen({
   successMessage,
   onAddTask,
   onCompleteTask,
-  onDeleteTask
+  onDeleteTask,
+  onLogout,
 }) {
 
   return (
     <div className="space-y-6">
       <div className="rounded-3xl border border-teal-400/20 bg-gradient-to-r from-teal-400/10 to-cyan-400/10 p-5">
         <p className="text-sm text-teal-200">Hello {userName || 'User'}!</p>
+        <div className="flex justify-between items-start">
+  <p className="text-sm text-teal-200">
+    Hello {userName || 'User'}!
+  </p>
+
+  <button
+    onClick={onLogout}
+    className="rounded bg-red-600 px-4 py-2 text-sm text-white"
+  >
+    Logout
+  </button>
+</div>
         <h2 className="mt-2 text-2xl font-bold text-white">Here’s your focus dashboard for today.</h2>
         <p className="mt-2 text-sm leading-6 text-slate-300">
           Review your priorities, keep your next task visible, and build momentum one step at a time.

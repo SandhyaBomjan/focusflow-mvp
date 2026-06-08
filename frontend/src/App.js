@@ -167,6 +167,7 @@ const handleDeleteTask = async (id) => {
       setFeedback('Invalid email or password.');
       return;
     }
+    localStorage.setItem("userEmail", loginForm.email);
 
     const userName = loginForm.email.split('@')[0];
 
@@ -174,8 +175,6 @@ const handleDeleteTask = async (id) => {
       name: userName,
       email: loginForm.email,
     });
-
-    localStorage.setItem('userEmail', loginForm.email);
 
     setDashboardMessage('Successfully logged in.');
 
@@ -224,6 +223,15 @@ const handleDeleteTask = async (id) => {
 } catch (error) {
   setFeedback('Registration failed.');
 }
+};
+const handleLogout = async () => {
+  await supabase.auth.signOut();
+
+  localStorage.removeItem("userEmail");
+
+  setUser(null);
+  setTasks([]);
+  setCurrentStep(2);
 };
    const handleTaskSubmit = async () => {
     console.log("HANDLE TASK SUBMIT RUNNING");
@@ -322,9 +330,7 @@ const handleDeleteTask = async (id) => {
   }}
   onCompleteTask={handleCompleteTask}
   onDeleteTask={handleDeleteTask}
-  nextStep={nextStep}
-  prevStep={prevStep}
-  goToDashboard={goToDashboard}
+  onLogout={handleLogout}
 />
       );
     }
