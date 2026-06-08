@@ -15,7 +15,6 @@ function DashboardScreen({
   return (
     <div className="space-y-6">
       <div className="rounded-3xl border border-teal-400/20 bg-gradient-to-r from-teal-400/10 to-cyan-400/10 p-5">
-        <p className="text-sm text-teal-200">Hello {userName || 'User'}!</p>
         <div className="flex justify-between items-start">
   <p className="text-sm text-teal-200">
     Hello {userName || 'User'}!
