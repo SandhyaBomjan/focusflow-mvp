@@ -14,6 +14,7 @@ import AddTaskScreen from './screens/AddTaskScreen';
 import ConfirmationScreen from './screens/ConfirmationScreen';
 import { TOTAL_STEPS } from './data/screens';
 import { hasValue, isEmailValid, isLoginValid, isRegisterValid, isTaskValid } from './utils/validation';
+import { supabase } from './supabase';
 
 const initialLoginForm = { email: '', password: '' };
 const initialRegisterForm = { name: '', email: '', password: '' };
@@ -63,8 +64,11 @@ function App() {
 
  const loadTasks = async () => {
   try {
-    const fetchedTasks = await getTasks();
-   setTasks(fetchedTasks);
+    const email = localStorage.getItem("userEmail");
+
+    const fetchedTasks = await getTasks(email);
+
+    setTasks(fetchedTasks);
   } catch (error) {
     console.error("Failed to load tasks:", error);
   }
@@ -136,52 +140,91 @@ const handleDeleteTask = async (id) => {
     setCurrentStep(3);
   };
 
-  const handleLoginSubmit = () => {
-    const nextErrors = {};
+  const handleLoginSubmit = async () => {
+  const nextErrors = {};
 
-    if (!hasValue(loginForm.email)) nextErrors.email = 'Email is required.';
-    else if (!isEmailValid(loginForm.email)) nextErrors.email = 'Please enter a valid email address.';
+  if (!hasValue(loginForm.email))
+    nextErrors.email = 'Email is required.';
+  else if (!isEmailValid(loginForm.email))
+    nextErrors.email = 'Please enter a valid email address.';
 
-    if (!hasValue(loginForm.password)) nextErrors.password = 'Password is required.';
+  if (!hasValue(loginForm.password))
+    nextErrors.password = 'Password is required.';
 
-    if (Object.keys(nextErrors).length > 0) {
-      setErrors(nextErrors);
-      setFeedback('Please complete the required fields before continuing.');
+  if (Object.keys(nextErrors).length > 0) {
+    setErrors(nextErrors);
+    setFeedback('Please complete the required fields before continuing.');
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: loginForm.email,
+      password: loginForm.password,
+    });
+
+    if (error) {
+      setFeedback('Invalid email or password.');
       return;
     }
 
-    const derivedName = registerForm.name || loginForm.email.split('@')[0] || 'User';
-    setUser({ name: derivedName, email: loginForm.email });
-    localStorage.setItem("userEmail", loginForm.email);
-    setDashboardMessage('Logged in locally. Your productivity space is ready.');
-    clearMessages();
-    setCurrentStep(3);
-  };
+    const userName = loginForm.email.split('@')[0];
 
-  const handleRegisterSubmit = () => {
+    setUser({
+      name: userName,
+      email: loginForm.email,
+    });
+
+    localStorage.setItem('userEmail', loginForm.email);
+
+    setDashboardMessage('Successfully logged in.');
+
+    clearMessages();
+
+    setCurrentStep(3);
+
+  } catch (error) {
+    setFeedback('Login failed.');
+  }
+};
+
+  const handleRegisterSubmit = async () => {
     const nextErrors = {};
 
     if (!hasValue(registerForm.name)) nextErrors.name = 'Name is required.';
     if (!hasValue(registerForm.email)) nextErrors.email = 'Email is required.';
     else if (!isEmailValid(registerForm.email)) nextErrors.email = 'Please enter a valid email address.';
     if (!hasValue(registerForm.password)) nextErrors.password = 'Password is required.';
-
+    if (!hasValue(registerForm.password))nextErrors.password = 'Password is required.';
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
       setFeedback('Please complete the required fields before continuing.');
       return;
     }
 
-    setUser({ name: registerForm.name, email: registerForm.email });
-    setLoginForm({
+  try {
+  const { data, error } = await supabase.auth.signUp({
     email: registerForm.email,
-     password: registerForm.password
-});
+    password: registerForm.password,
+  });
 
-setFeedback('Account created successfully. Please log in.');
-setCurrentStep(2);
-  };
+  if (error) {
+    setFeedback(error.message);
+    return;
+  }
 
+  setFeedback('Account created successfully. Please log in.');
+
+  setLoginForm({
+    email: registerForm.email,
+    password: '',
+  });
+
+  setCurrentStep(2);
+} catch (error) {
+  setFeedback('Registration failed.');
+}
+};
    const handleTaskSubmit = async () => {
     console.log("HANDLE TASK SUBMIT RUNNING");
     console.log("EMAIL:", localStorage.getItem("userEmail"));

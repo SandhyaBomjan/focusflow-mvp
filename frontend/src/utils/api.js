@@ -1,8 +1,6 @@
 const API_URL = "https://focusflow-cddgm196x-sandhya-bomjan-s-projects.vercel.app";
 
-export const getTasks = async () => {
-  const userEmail = localStorage.getItem("userEmail");
-
+export const getTasks = async (userEmail) => {
   const response = await fetch(
     `${API_URL}/tasks?user_email=${encodeURIComponent(userEmail)}`
   );
